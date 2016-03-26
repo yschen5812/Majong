@@ -2,8 +2,8 @@ const Emitter = require('events');
 const util = require('util');
 const Logger = require('../util/logger.js');
 const Guid = require('../util/guid.js');
+const global = require('../global.js');
 
-const g_maxBoardPlayers = 4;
 var logger;
 
 function Board (logLevel, name) {
@@ -18,7 +18,7 @@ function Board (logLevel, name) {
 util.inherits(Board, Emitter);
 
 Board.prototype.addUserToBoard = function (user) {
-  if (this.d_numUsers >= g_maxBoardPlayers) {
+  if (this.d_numUsers >= global.maxBoardPlayers) {
     logger.error(`${this.d_boardId} reached the user number limit.`);
     return false;
   }
