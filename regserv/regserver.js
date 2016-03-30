@@ -15,24 +15,30 @@ function RegServer (logLevel) {
 util.inherits(RegServer, Emitter);
 
 
-RegServer.prototype.register = function (responseCB, data) {
+RegServer.prototype.register = function (data, writeResponse) {
   var loginSessionId = Guid.genRandString(15);
-  logger.info(`register user=${JSON.stringify(data.user, null, 2)}`);
-  this.d_userDB.addUser(loginSessionId, data.user, function(response) {
-    if (response.success) {
-      responseCB({
-        user: data.user,
+  logger.info(`register user=${JSON.stringify(data, null, 2)}`);
+  this.d_userDB.addUser(loginSessionId, data, function(response) {
+    if (response.success)
+    {
+      var payload = {
+        user: data,
         loginSessionId: loginSessionId
-      });
-    } else {
-      responseCB(response);
+      }
+      writeResponse.write(JSON.stringify(payload));
     }
+    else
+    {
+      writeResponse.write(JSON.stringify(response));
+    }
+
+    writeResponse.end();
   });
 };
 
-RegServer.prototype.deregister = function (responseCB, loginSessionId) {
+RegServer.prototype.deregister = function (loginSessionId) {
   this.d_userDB.removeUser(loginSessionId, function(response) {
-    responseCB(response);
+    // responseCB(response);
   });
 };
 

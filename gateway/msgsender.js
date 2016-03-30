@@ -21,7 +21,7 @@ MsgSender.prototype.send = function (user, data) {
     hostname: user.ip,
     port: user.port,
     path: '/regresponse',
-    method: 'PUT', // 'POST'
+    method: 'PUT',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
       'Content-Length': postData.length

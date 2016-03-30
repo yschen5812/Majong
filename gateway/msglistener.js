@@ -3,6 +3,7 @@ const util = require('util');
 const queryStirng = require('querystring');
 const Emitter = require('events');
 const Logger = require('../util/logger.js');
+const global = require('../global.js');
 
 var logger;
 
@@ -28,58 +29,54 @@ MsgListener.prototype.startServer = function () {
       logger.error(err);
     });
 
-    // process request
-    if (request.url.startsWith('/put'))//(request.method === "PUT")
-    {
-      logger.debug(`Got request from url=${request.url}`);
-      if (request.url.indexOf('&') !== -1)
-      {
-        // request from browser, parse the command
-        var fn = request.url.substring(1, request.url.indexOf('&'));
-        var body = request.url.substring(request.url.indexOf('&') + 1);
-        body = queryStirng.parse(body);
-        this.dispatchEvent(fn, body);
-        response.write("<html>");
-        response.write("<head>");
-        response.write("<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=UTF-8'");
-        response.write("</head>");
-        response.write("<body>");
-        response.write("<button>一條</button> <button>一條</button> <button>三條</button> <button>四條</button> <button>五條</button> <button>六筒</button> <button>七筒</button> <button>八筒</button> <button>九萬</button> <button>九萬</button> <button>九萬</button> <button>北風</button> <button>北風</button> <button>北風</button>");
-        response.write("</body>");
-        response.write("</html>");
-        response.end();
-      }
-      else
-      {
-        var body = [];
-        request
-          .on('data', function(chunk) {
-            // aggregate data into 'body' before receiving 'end' signal
-            body.push(chunk);
-          })
-          .on('end', function() {
-            body = JSON.parse(Buffer.concat(body).toString());
-            logger.debug(`Received message body=${JSON.stringify(body, null ,2)}`);
 
-            var fn = request.url.substr(1);
-            this.dispatchEvent(fn, body);
-            response.end();
-          }.bind(this))
-      }
+    logger.debug(`Got request from url=${request.url}`);
+
+    // process request
+    if (request.url.startsWith('/browser'))
+    {
+      // request from browser, parse the command
+      var cmd = request.url.substring(1, request.url.indexOf('&'));
+      var body = request.url.substring(request.url.indexOf('&') + 1);
+      body = queryStirng.parse(body);
+
+      logger.debug(`parsed body=${queryStirng.stringify(body)}`);
+
+      this.dispatchEvent('browser', {event: {eventType: cmd, eventData: body}, writeResponse: response});
+    }
+    else if (request.url.startsWith('/board'))
+    {
+      var body = [];
+      request
+        .on('data', function(chunk) {
+          // aggregate data into 'body' before receiving 'end' signal
+          body.push(chunk);
+        })
+        .on('end', function() {
+          body = JSON.parse(Buffer.concat(body).toString());
+
+          var cmd = request.url.substr(1);
+          this.dispatchEvent('board', {event: {eventType: cmd, eventData: body}, writeResponse: response});
+        }.bind(this))
     }
     else
     {
       response.statusCode = 404;
       response.end();
     }
-  }.bind(this)).listen(8080, "127.0.0.1");
+  }.bind(this)).listen(global.serverPort, global.serverIP);
 };
 
-MsgListener.prototype.dispatchEvent = function (fn, data) {
-  logger.debug(`fn=${fn}, data=${JSON.stringify(data, null, 2)}`);
+MsgListener.prototype.dispatchEvent = function (fn, payload) {
+  try {
+    logger.debug(`fn=${fn}, data=${JSON.stringify(payload, null, 2)}`);
+  } catch (e) {
+
+  }
+
   if (this.d_events.indexOf(fn) !== -1)
   {
-    this.emit(fn, data);
+    this.emit(fn, payload);
   }
   else
   {
