@@ -19,6 +19,9 @@ function Board (logLevel) {
 
   this.d_seaFloor = []; // the tiles in the order of users discard
   this.d_latestSeaFloorTile = null;
+
+  this.d_remainingSeats = ['東', '南', '西', '北']; // should be empty after all users pick up
+  this.d_seatTable = {}; // { loginSessionId: '東' }
 }
 util.inherits(Board, Emitter);
 
@@ -54,6 +57,10 @@ Board.prototype.removerUserFromBoard = function (user) {
   // return true;
 };
 
+Board.prototype.assignSeatToUser = function (loginSessionId, seat) {
+  this.d_seatTable[loginSessionId] = seat;
+};
+
 Board.prototype.users = function () {
   return this.d_users;
 };
@@ -66,9 +73,30 @@ Board.prototype.hasUser = function (loginSessionId) {
   return this.d_users.indexOf(loginSessionId) !== -1;
 };
 
+Board.prototype.threeDicesSum = function () {
+  var dice1 = getRandomArbitrary(1, 7);
+  var dice2 = getRandomArbitrary(1, 7);
+  var dice3 = getRandomArbitrary(1, 7);
+  return dice1 + dice2 + dice3;
+};
+
 /*
   Special functions for events
 */
+Board.prototype.drawseat = function (loginSessionId) {
+  var num = this.d_remainingSeats.length;
+  if (num > 0) {
+    var randIdx = getRandomArbitrary(0, num);
+    this.assignSeatToUser(loginSessionId, this.d_remainingSeats[randIdx]);
+    return this.d_remainingSeats.splice(randIdx, 1)[0];
+  }
+  return null;
+};
+
+Board.prototype.opendoor = function () {
+  return this.threeDicesSum();
+};
+
 Board.prototype.discard = function (tile) {
   this.d_latestSeaFloorTile = tile;
   this.d_seaFloor.push(tile);
@@ -83,11 +111,9 @@ Board.prototype.takeback = function () {
 };
 
 Board.prototype.eat = function () {
-  if (this.d_latestSeaFloorTile) {
-    var tile = this.d_latestSeaFloorTile;
-    this.d_latestSeaFloorTile = null;
-    return tile;
-  }
+  var tile = this.d_latestSeaFloorTile;
+  this.d_latestSeaFloorTile = null;
+  return tile;
 };
 /*******************************/
 

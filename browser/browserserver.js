@@ -14,6 +14,33 @@ function BrowserServer (logLevel) {
 util.inherits(BrowserServer, Emitter);
 
 
+
+BrowserServer.prototype.generateStartPage =
+                          function (response, loginSessionId, boardId) {
+  // write html head, body labels
+  this.writeHtmlStart(response);
+  // write display area (id='displayArea')
+  this.writeDisplayArea(response);
+  // generate command buttons
+  this.writeStartCommandButtons(response);
+  // <script>
+  this.writeScriptStart(response);
+  // global varibles
+  // this.writeGlobalVariables(response);
+  // write onClick handlers for all buttons
+  this.writeStartButtonClickedHandlers(response, loginSessionId, boardId);
+  // write getAllButtons for browser client to querry all current buttons
+  // this.writeGetAllButtons(response, atHandString);
+  // write readableToUrl for browser client to convert strings
+  // this.writeReadableToUrl(response);
+  // </script>
+  this.writeScriptEnd(response);
+  // write html head, body end labels
+  this.writeHtmlEnd(response);
+  // must put end to end connection of the request
+  response.end();
+};
+
 BrowserServer.prototype.generateNextPage =
                           function (data, response, loginSessionId, boardId) {
   var atHand = Object.keys(data);
@@ -35,13 +62,13 @@ BrowserServer.prototype.generateNextPage =
   // write display area (id='displayArea')
   this.writeDisplayArea(response);
   // generate command buttons
-  this.writeCommandButtons(response);
+  this.writeGameCommandButtons(response);
   // <script>
   this.writeScriptStart(response);
   // global varibles
   this.writeGlobalVariables(response);
   // write onClick handlers for all buttons
-  this.writeButtonClickedHandlers(response, loginSessionId, boardId);
+  this.writeGameButtonClickedHandlers(response, loginSessionId, boardId);
   // write getAllButtons for browser client to querry all current buttons
   this.writeGetAllButtons(response, atHandString);
   // write readableToUrl for browser client to convert strings
@@ -55,23 +82,55 @@ BrowserServer.prototype.generateNextPage =
 };
 
 BrowserServer.prototype.startgame = function (data, response) {
-  logger.debug(`in place, data=${JSON.stringify(data)}`);
-  var placedUrl = data["placed"]; // should be {}, not used
+  logger.debug(`in startgame, data=${JSON.stringify(data)}`);
   var boardId = data["bid"];
   var loginSessionId = data["lsid"];
 
-  this.emit('startgame', loginSessionId, boardId, placedUrl);
+  // this.emit('startgame', loginSessionId, boardId);
 
-  data = {}; // don't generate any buttons
+  logger.debug(`boardId=${boardId}, loginSessionId=${loginSessionId}`);
 
-  logger.debug(`placedUrl=${placedUrl}, boardId=${boardId}, ` +
-               `loginSessionId=${loginSessionId}, data[${placedUrl}]=${data[placedUrl]}`);
+  this.generateStartPage(response, loginSessionId, boardId);
+};
 
-  this.generateNextPage(data, response, loginSessionId, boardId);
+BrowserServer.prototype.drawseat = function (data, response) {
+  logger.debug(`in drawseat, data=${JSON.stringify(data)}`);
+  var boardId = data["bid"];
+  var loginSessionId = data["lsid"];
+
+  this.emit('drawseat', loginSessionId, boardId);
+
+  logger.debug(`boardId=${boardId}, loginSessionId=${loginSessionId}`);
+
+  this.generateStartPage(response, loginSessionId, boardId);
+};
+
+BrowserServer.prototype.opendoor = function (data, response) {
+  logger.debug(`in opendoor, data=${JSON.stringify(data)}`);
+  var boardId = data["bid"];
+  var loginSessionId = data["lsid"];
+
+  this.emit('opendoor', loginSessionId, boardId);
+
+  logger.debug(`boardId=${boardId}, loginSessionId=${loginSessionId}`);
+
+  this.generateStartPage(response, loginSessionId, boardId);
+};
+
+BrowserServer.prototype.ready = function (data, response) {
+  logger.debug(`in ready, data=${JSON.stringify(data)}`);
+  var boardId = data["bid"];
+  var loginSessionId = data["lsid"];
+
+  // this.emit('ready', loginSessionId, boardId);
+
+  logger.debug(`boardId=${boardId}, loginSessionId=${loginSessionId}`);
+
+  this.generateNextPage({}, response, loginSessionId, boardId);
 };
 
 BrowserServer.prototype.discard = function (data, response) {
-  logger.debug(`in place, data=${JSON.stringify(data)}`);
+  logger.debug(`in discard, data=${JSON.stringify(data)}`);
   var placedUrl = data["placed"];
   var boardId = data["bid"];
   var loginSessionId = data["lsid"];
@@ -95,7 +154,7 @@ BrowserServer.prototype.discard = function (data, response) {
 };
 
 BrowserServer.prototype.show = function (data, response) {
-  logger.debug(`in place, data=${JSON.stringify(data)}`);
+  logger.debug(`in show, data=${JSON.stringify(data)}`);
   var placedUrl = data["placed"];
   var boardId = data["bid"];
   var loginSessionId = data["lsid"];
@@ -119,7 +178,7 @@ BrowserServer.prototype.show = function (data, response) {
 };
 
 BrowserServer.prototype.cover = function (data, response) {
-  logger.debug(`in place, data=${JSON.stringify(data)}`);
+  logger.debug(`in cover, data=${JSON.stringify(data)}`);
   var placedUrl = data["placed"];
   var boardId = data["bid"];
   var loginSessionId = data["lsid"];
@@ -143,7 +202,7 @@ BrowserServer.prototype.cover = function (data, response) {
 };
 
 BrowserServer.prototype.takefront = function (data, response) {
-  logger.debug(`in place, data=${JSON.stringify(data)}`);
+  logger.debug(`in takefront, data=${JSON.stringify(data)}`);
   var placedUrl = data["placed"]; // should be {}, not used
   var boardId = data["bid"];
   var loginSessionId = data["lsid"];
@@ -164,7 +223,7 @@ BrowserServer.prototype.takefront = function (data, response) {
 };
 
 BrowserServer.prototype.takeback = function (data, response) {
-  logger.debug(`in place, data=${JSON.stringify(data)}`);
+  logger.debug(`in takeback, data=${JSON.stringify(data)}`);
   var placedUrl = data["placed"];
   var boardId = data["bid"];
   var loginSessionId = data["lsid"];
@@ -185,7 +244,7 @@ BrowserServer.prototype.takeback = function (data, response) {
 };
 
 BrowserServer.prototype.eat = function (data, response) {
-  logger.debug(`in place, data=${JSON.stringify(data)}`);
+  logger.debug(`in eat, data=${JSON.stringify(data)}`);
   var placedUrl = data["placed"];
   var boardId = data["bid"];
   var loginSessionId = data["lsid"];
@@ -203,8 +262,14 @@ BrowserServer.prototype.eat = function (data, response) {
 };
 
 
+BrowserServer.prototype.writeStartButtonClickedHandlers =
+                                function (response, loginSessionId, boardId) {
+  this.writeOnDrawSeatClicked(response, loginSessionId, boardId);
+  this.writeOnOpenDoorClicked(response, loginSessionId, boardId);
+  this.writeOnReadyClicked(response, loginSessionId, boardId);
+};
 
-BrowserServer.prototype.writeButtonClickedHandlers =
+BrowserServer.prototype.writeGameButtonClickedHandlers =
                                 function (response, loginSessionId, boardId) {
   this.writeOnTileClicked(response, loginSessionId, boardId);
   this.writeOnShowClicked(response);
@@ -278,6 +343,51 @@ BrowserServer.prototype.writeGlobalVariables = function (response) {
     var g_action = null;                                              \
     "
   );
+};
+
+BrowserServer.prototype.writeOnDrawSeatClicked = function (response, loginSessionId, boardId) {
+  logger.debug(`in writeOnDrawSeatClicked, loginSessionId=${loginSessionId}, boardId=${boardId}`);
+  response.write(`function onDrawSeatClicked(objButton) {                         \
+    alert('drawseat');                                                            \
+    try {                                                                         \
+      window.location = \"http://\" +                                             \
+        \"${global.serverIP}:${global.serverPort.toString()}/\" +                 \
+        \"browser_drawseat\" +                                                    \
+        \"&lsid=${loginSessionId}&bid=${boardId}\";                               \
+    } catch(e) {                                                                  \
+      alert(e);                                                                   \
+    }                                                                             \
+  }`);
+};
+
+BrowserServer.prototype.writeOnOpenDoorClicked = function (response, loginSessionId, boardId) {
+  logger.debug(`in writeOnOpenDoorClicked, loginSessionId=${loginSessionId}, boardId=${boardId}`);
+  response.write(`function onOpenDoorClicked(objButton) {                         \
+    alert('opendoor');                                                            \
+    try {                                                                         \
+      window.location = \"http://\" +                                             \
+        \"${global.serverIP}:${global.serverPort.toString()}/\" +                 \
+        \"browser_opendoor\" +                                                    \
+        \"&lsid=${loginSessionId}&bid=${boardId}\";                               \
+    } catch(e) {                                                                  \
+      alert(e);                                                                   \
+    }                                                                             \
+  }`);
+};
+
+BrowserServer.prototype.writeOnReadyClicked = function (response, loginSessionId, boardId) {
+  logger.debug(`in writeOnOpenDoorClicked, loginSessionId=${loginSessionId}, boardId=${boardId}`);
+  response.write(`function onReadyClicked(objButton) {                            \
+    alert('ready');                                                               \
+    try {                                                                         \
+      window.location = \"http://\" +                                             \
+        \"${global.serverIP}:${global.serverPort.toString()}/\" +                 \
+        \"browser_ready\" +                                                       \
+        \"&lsid=${loginSessionId}&bid=${boardId}\";                               \
+    } catch(e) {                                                                  \
+      alert(e);                                                                   \
+    }                                                                             \
+  }`);
 };
 
 BrowserServer.prototype.writeOnTileClicked = function (response, loginSessionId, boardId) {
@@ -431,7 +541,14 @@ BrowserServer.prototype.generateTileButtonHtml = function (buttonContent) {
   return `<button onclick='onTileClicked(this)'> ${buttonContent} </button>`;
 };
 
-BrowserServer.prototype.writeCommandButtons = function (response) {
+BrowserServer.prototype.writeStartCommandButtons = function (response) {
+  var spaces = "&nbsp;&nbsp;&nbsp;&nbsp;";
+  response.write("<button onclick='onDrawSeatClicked(this)'>抽座位</button>" + spaces);
+  response.write("<button onclick='onOpenDoorClicked(this)'>骰開門</button>" + spaces);
+  response.write("<button onclick='onReadyClicked(this)'>準備好了!</button>" + spaces);
+};
+
+BrowserServer.prototype.writeGameCommandButtons = function (response) {
   var spaces = "&nbsp;&nbsp;&nbsp;&nbsp;";
   response.write("<button onclick='onShowClicked(this)'>亮牌</button>" + spaces);
   response.write("<button onclick='onCoverClicked(this)'>暗牌</button>" + spaces);

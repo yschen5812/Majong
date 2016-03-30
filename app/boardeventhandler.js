@@ -95,6 +95,22 @@ BoardEventHandler.prototype.notifySubscribers =
   this.d_boardTable.forEachSubscriberToUpdate(applyIf, doFunc);
 };
 
+BoardEventHandler.prototype.process_userDrawSeat =
+                                function (loginSessionId, boardId, placedUrl) {
+  logger.debug(`process_userDrawSeat loginSessionId=${loginSessionId}, boardId=${boardId},` +
+               `placedUrl=${placedUrl}`);
+  var seat = this.d_boardTable.gameExecute(boardId, {'drawseat': loginSessionId});
+  this.notifySubscribers(loginSessionId, boardId, {drawseat: seat});
+};
+
+BoardEventHandler.prototype.process_userOpenDoor =
+                                function (loginSessionId, boardId, placedUrl) {
+  logger.debug(`process_userOpenDoor loginSessionId=${loginSessionId}, boardId=${boardId},` +
+               `placedUrl=${placedUrl}`);
+  var door = this.d_boardTable.gameExecute(boardId, {'opendoor': {}});
+  this.notifySubscribers(loginSessionId, boardId, {opendoor: door});
+};
+
 BoardEventHandler.prototype.process_userDiscard =
                                 function (loginSessionId, boardId, placedUrl) {
   logger.debug(`process_userDiscard loginSessionId=${loginSessionId}, boardId=${boardId},` +

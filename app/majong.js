@@ -26,6 +26,10 @@ function Majong () {
   this.d_msgListener.startServer();
 
   this.d_browserServer
+    .on('drawseat',
+        this.d_boardHandler.process_userDrawSeat.bind(this.d_boardHandler))
+    .on('opendoor',
+        this.d_boardHandler.process_userOpenDoor.bind(this.d_boardHandler))
     .on('discard',
         this.d_boardHandler.process_userDiscard.bind(this.d_boardHandler))
     .on('show',
