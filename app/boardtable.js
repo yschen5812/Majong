@@ -26,7 +26,7 @@ function BoardTable (logLevel) {
 util.inherits(BoardTable, Emitter);
 
 BoardTable.prototype.subscribeBoard = function (boardId, responseCB) {
-  var boardSessionId = "testbsid";//Guid.genRandString(5);
+  var boardSessionId = Guid.genRandString(5); //"testbsid"
 
   if (!(boardId in this.d_updateTable)) {
     this.d_updateTable[boardId] = {
@@ -55,12 +55,19 @@ BoardTable.prototype.addBoardUser = function (boardId, loginSessionId, responseC
   }
 
   var board = this.d_updateTable[boardId].board;
-  board.addUserToBoard(loginSessionId);
-  if (board.numOfUser() === global.maxBoardPlayers) {
-    logger.debug(`fire ${boardId} event in boardTable`);
-    this.emit(boardId);
+  if (board.addUserToBoard(loginSessionId)) {
+    if (board.numOfUser() === global.maxBoardPlayers) {
+      logger.debug(`fire ${boardId} event in boardTable`);
+      this.emit(boardId);
+    }
+    responseCB({success: `${board.numOfUser()} users in board ${boardId}`});
+  } else {
+    responseCB({
+      failed: {},
+      errmsg: `${boardId} reached the limit`
+    })
+    return;
   }
-  responseCB({success: `${board.numOfUser()} users in board ${boardId}`});
 };
 
 BoardTable.prototype.removeBoardUser = function (boardId, loginSessionId, responseCB) {

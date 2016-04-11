@@ -5,6 +5,7 @@ const Board = require('./board.js');
 const BoardTable = require('./boardtable.js');
 const global = require('../global.js');
 const Logger = require('../util/logger.js');
+const UrlToReadable = require('../util/typeconverter.js');
 
 var logger;
 function BoardEventHandler (logLevel) {
@@ -48,7 +49,10 @@ BoardEventHandler.prototype.startgame = function (data, response) {
       };
       return obj;
     });
-    response.write(JSON.stringify(users));
+    var respObj = {
+      success: users
+    };
+    response.write(JSON.stringify(respObj));
     response.end();
   }
 };
@@ -58,7 +62,10 @@ BoardEventHandler.prototype.requestupdate = function (data, response) {
   var boardSessionId = data.boardSessionId;
   var res = this.d_boardTable.retrieveUpdates(boardId, boardSessionId);
   logger.debug(`response=${JSON.stringify(res)}`);
-  response.write(JSON.stringify(res));
+  var respObj = {
+    success: res
+  };
+  response.write(JSON.stringify(respObj));
   response.end();
 };
 
@@ -116,21 +123,21 @@ BoardEventHandler.prototype.process_userDiscard =
   logger.debug(`process_userDiscard loginSessionId=${loginSessionId}, boardId=${boardId},` +
                `placedUrl=${placedUrl}`);
   this.d_boardTable.gameExecute(boardId, {'discard': placedUrl});
-  this.notifySubscribers(loginSessionId, boardId, {discard: placedUrl});
+  this.notifySubscribers(loginSessionId, boardId, {discard: UrlToReadable.urlToReadable(placedUrl)});
 };
 
 BoardEventHandler.prototype.process_userShow =
                                 function (loginSessionId, boardId, placedUrl) {
   logger.debug(`process_userShow loginSessionId=${loginSessionId}, boardId=${boardId},` +
                `placedUrl=${placedUrl}`);
-  this.notifySubscribers(loginSessionId, boardId, {show: placedUrl});
+  this.notifySubscribers(loginSessionId, boardId, {show: UrlToReadable.urlToReadable(placedUrl)});
 };
 
 BoardEventHandler.prototype.process_userCover =
                                 function (loginSessionId, boardId, placedUrl) {
   logger.debug(`process_userCover loginSessionId=${loginSessionId}, boardId=${boardId},` +
                `placedUrl=${placedUrl}`);
-  this.notifySubscribers(loginSessionId, boardId, {cover: placedUrl});
+  this.notifySubscribers(loginSessionId, boardId, {cover: UrlToReadable.urlToReadable(placedUrl)});
 };
 
 BoardEventHandler.prototype.process_userTakeFront =
@@ -139,7 +146,7 @@ BoardEventHandler.prototype.process_userTakeFront =
                `placedUrl=${placedUrl}`);
 
   onGetFrontTileCB(this.d_boardTable.gameExecute(boardId, {'takefront': {}}));
-  this.notifySubscribers(loginSessionId, boardId, {takefront: placedUrl});
+  this.notifySubscribers(loginSessionId, boardId, {takefront: {}});
 };
 
 BoardEventHandler.prototype.process_userTakeBack =
@@ -148,7 +155,7 @@ BoardEventHandler.prototype.process_userTakeBack =
                `placedUrl=${placedUrl}`);
 
   onGetBackTileCB(this.d_boardTable.gameExecute(boardId, {'takeback': {}}));
-  this.notifySubscribers(loginSessionId, boardId, {takeback: placedUrl});
+  this.notifySubscribers(loginSessionId, boardId, {takeback: {}});
 };
 
 BoardEventHandler.prototype.process_userEat =
@@ -157,7 +164,7 @@ BoardEventHandler.prototype.process_userEat =
                `placedUrl=${placedUrl}`);
   var eatenUrl = this.d_boardTable.gameExecute(boardId, {'eat': {}});
   if (eatenUrl) {
-    this.notifySubscribers(loginSessionId, boardId, {eat: eatenUrl});
+    this.notifySubscribers(loginSessionId, boardId, {eat: {}});
   }
 };
 

@@ -348,7 +348,6 @@ BrowserServer.prototype.writeGlobalVariables = function (response) {
 BrowserServer.prototype.writeOnDrawSeatClicked = function (response, loginSessionId, boardId) {
   logger.debug(`in writeOnDrawSeatClicked, loginSessionId=${loginSessionId}, boardId=${boardId}`);
   response.write(`function onDrawSeatClicked(objButton) {                         \
-    alert('drawseat');                                                            \
     try {                                                                         \
       window.location = \"http://\" +                                             \
         \"${global.serverIP}:${global.serverPort.toString()}/\" +                 \
@@ -363,7 +362,6 @@ BrowserServer.prototype.writeOnDrawSeatClicked = function (response, loginSessio
 BrowserServer.prototype.writeOnOpenDoorClicked = function (response, loginSessionId, boardId) {
   logger.debug(`in writeOnOpenDoorClicked, loginSessionId=${loginSessionId}, boardId=${boardId}`);
   response.write(`function onOpenDoorClicked(objButton) {                         \
-    alert('opendoor');                                                            \
     try {                                                                         \
       window.location = \"http://\" +                                             \
         \"${global.serverIP}:${global.serverPort.toString()}/\" +                 \
@@ -378,7 +376,6 @@ BrowserServer.prototype.writeOnOpenDoorClicked = function (response, loginSessio
 BrowserServer.prototype.writeOnReadyClicked = function (response, loginSessionId, boardId) {
   logger.debug(`in writeOnOpenDoorClicked, loginSessionId=${loginSessionId}, boardId=${boardId}`);
   response.write(`function onReadyClicked(objButton) {                            \
-    alert('ready');                                                               \
     try {                                                                         \
       window.location = \"http://\" +                                             \
         \"${global.serverIP}:${global.serverPort.toString()}/\" +                 \

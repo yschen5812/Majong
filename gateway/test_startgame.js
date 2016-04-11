@@ -11,7 +11,7 @@ var clientPort = 80;
 // });
 
 var postData = JSON.stringify({
-  'boardId': 'testboard'
+  'boardId': 'u'
 });
 
 var options = {
