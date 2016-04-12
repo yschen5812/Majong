@@ -64,7 +64,7 @@ MsgListener.prototype.startServer = function () {
       response.statusCode = 404;
       response.end();
     }
-  }.bind(this)).listen(global.serverPort, global.serverIP);
+  }.bind(this)).listen(global.privatePort, global.privateIp);
 };
 
 MsgListener.prototype.dispatchEvent = function (fn, payload) {

@@ -350,7 +350,7 @@ BrowserServer.prototype.writeOnDrawSeatClicked = function (response, loginSessio
   response.write(`function onDrawSeatClicked(objButton) {                         \
     try {                                                                         \
       window.location = \"http://\" +                                             \
-        \"${global.serverIP}:${global.serverPort.toString()}/\" +                 \
+        \"${global.publicIP}:${global.publicPort.toString()}/\" +                 \
         \"browser_drawseat\" +                                                    \
         \"&lsid=${loginSessionId}&bid=${boardId}\";                               \
     } catch(e) {                                                                  \
@@ -364,7 +364,7 @@ BrowserServer.prototype.writeOnOpenDoorClicked = function (response, loginSessio
   response.write(`function onOpenDoorClicked(objButton) {                         \
     try {                                                                         \
       window.location = \"http://\" +                                             \
-        \"${global.serverIP}:${global.serverPort.toString()}/\" +                 \
+        \"${global.publicIP}:${global.publicPort.toString()}/\" +                 \
         \"browser_opendoor\" +                                                    \
         \"&lsid=${loginSessionId}&bid=${boardId}\";                               \
     } catch(e) {                                                                  \
@@ -378,7 +378,7 @@ BrowserServer.prototype.writeOnReadyClicked = function (response, loginSessionId
   response.write(`function onReadyClicked(objButton) {                            \
     try {                                                                         \
       window.location = \"http://\" +                                             \
-        \"${global.serverIP}:${global.serverPort.toString()}/\" +                 \
+        \"${global.publicIP}:${global.publicPort.toString()}/\" +                 \
         \"browser_ready\" +                                                       \
         \"&lsid=${loginSessionId}&bid=${boardId}\";                               \
     } catch(e) {                                                                  \
@@ -400,7 +400,7 @@ BrowserServer.prototype.writeOnTileClicked = function (response, loginSessionId,
       });                                                                         \
       var placed = readableToUrl(objButton.innerHTML);                            \
       window.location = \"http://\" +                                             \
-        \"${global.serverIP}:${global.serverPort.toString()}/\" +                 \
+        \"${global.publicIP}:${global.publicPort.toString()}/\" +                 \
         \"browser_\" + g_action +                                                 \
         \"&lsid=${loginSessionId}&bid=${boardId}&placed=\" + placed + payload;    \
     } catch(e) {                                                                  \
@@ -461,7 +461,7 @@ BrowserServer.prototype.writeOnTakeFrontClicked = function (response, loginSessi
           payload += \"&\" + type + \"=\" + buttons[type].toString();             \
         });                                                                       \
         window.location = \"http://\" +                                           \
-          \"${global.serverIP}:${global.serverPort.toString()}/\" +               \
+          \"${global.publicIP}:${global.publicPort.toString()}/\" +               \
           \"browser_takefront\" +                                                 \
           \"&lsid=${loginSessionId}&bid=${boardId}&placed=\" + payload;           \
       } catch(e) {                                                                \
@@ -483,7 +483,7 @@ BrowserServer.prototype.writeOnTakeBackClicked = function (response, loginSessio
           payload += \"&\" + type + \"=\" + buttons[type].toString();             \
         });                                                                       \
         window.location = \"http://\" +                                           \
-          \"${global.serverIP}:${global.serverPort.toString()}/\" +               \
+          \"${global.publicIP}:${global.publicPort.toString()}/\" +               \
           \"browser_takeback\" +                                                  \
           \"&lsid=${loginSessionId}&bid=${boardId}&placed=\" + payload;           \
       } catch(e) {                                                                \
@@ -505,7 +505,7 @@ BrowserServer.prototype.writeOnEatClicked = function (response, loginSessionId, 
           payload += \"&\" + type + \"=\" + buttons[type].toString();             \
         });                                                                       \
         window.location = \"http://\" +                                           \
-          \"${global.serverIP}:${global.serverPort.toString()}/\" +               \
+          \"${global.publicIP}:${global.publicPort.toString()}/\" +               \
           \"browser_eat\" +                                                       \
           \"&lsid=${loginSessionId}&bid=${boardId}&placed=\" + payload;           \
       } catch(e) {                                                                \
