@@ -115,7 +115,7 @@ public class BoardGUI extends JFrame {
 
    // notify users registered via this board to start browser
    String msg = "<html>請每位使用者在手機瀏覽器配合你被分配的註冊碼輸入以下網址:<br/>";
-   msg += "&nbsp;'http://" + Global.ServerIP + ":" + Global.ServerPort + "/browser_startgame?lsid=您的註冊碼&bid=" + boardIdInput + "'&nbsp;&nbsp;<br/><br/>";
+   msg += "&nbsp;'http://" + Global.ServerIP + ":" + Global.ServerPort + "/browser_startgame&lsid=您的註冊碼&bid=" + boardIdInput + "'&nbsp;&nbsp;<br/><br/>";
    for (String lsid : d_userNameTable.keySet()) {
      msg += "&nbsp;>>>'" + d_userNameTable.get(lsid) + "' 的註冊碼為:" + lsid + "<br/>";
    }

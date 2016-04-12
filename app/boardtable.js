@@ -81,8 +81,8 @@ BoardTable.prototype.retrieveUpdates = function (boardId, boardSessionId) {
                       return obj.hasOwnProperty(boardSessionId);
                     })
 
-  logger.debug(`boardId=${boardId}, boardSessionId=${boardSessionId}, ` +
-               `d_updateTable=${JSON.stringify(this.d_updateTable)}`);
+  // logger.debug(`boardId=${boardId}, boardSessionId=${boardSessionId}, ` +
+  //              `d_updateTable=${JSON.stringify(this.d_updateTable)}`);
 
   if (subscriber.length > 1 || subscriber.length < 1) {
     logger.error(`subscriber length=${subscriber.length}, should be 1`);
@@ -104,8 +104,8 @@ BoardTable.prototype.numUsersInBoard = function (boardId) {
 };
 
 BoardTable.prototype.boardHasUser = function (boardId, loginSessionId) {
-  logger.debug(`in boardHasUser, boardId=${boardId}, loginSessionId=${loginSessionId}, ` +
-               `d_updateTable=${JSON.stringify(this.d_updateTable)}`);
+  // logger.debug(`in boardHasUser, boardId=${boardId}, loginSessionId=${loginSessionId}, ` +
+  //              `d_updateTable=${JSON.stringify(this.d_updateTable)}`);
   return this.d_updateTable[boardId].board.hasUser(loginSessionId);
 };
 

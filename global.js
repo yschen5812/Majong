@@ -1,5 +1,5 @@
 const global = {
-  serverIP        :  "127.0.0.1",
+  serverIP        :  "172.31.44.81",
   serverPort      :  8080,
   clientIP        :  "127.0.0.1",
   clientPort      :  80,
