@@ -283,6 +283,16 @@ BrowserServer.prototype.writeGameButtonClickedHandlers =
 BrowserServer.prototype.writeHtmlStart = function (response) {
   response.write("<html>");
   response.write("<head>");
+  response.write(
+    "<style>\
+         .button {\
+             width:10%;\
+             height:5%;\
+             font-size:120%;\
+         }\
+    </style>\
+    "
+  );
   response.write("<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=UTF-8'");
   response.write("</head>");
   response.write("<body>");
@@ -535,24 +545,24 @@ BrowserServer.prototype.writeReadableToUrl = function (response) {
 };
 
 BrowserServer.prototype.generateTileButtonHtml = function (buttonContent) {
-  return `<button onclick='onTileClicked(this)'> ${buttonContent} </button>`;
+  return `<button class='button' onclick='onTileClicked(this)'> ${buttonContent} </button>`;
 };
 
 BrowserServer.prototype.writeStartCommandButtons = function (response) {
   var spaces = "&nbsp;&nbsp;&nbsp;&nbsp;";
-  response.write("<button onclick='onDrawSeatClicked(this)'>抽座位</button>" + spaces);
-  response.write("<button onclick='onOpenDoorClicked(this)'>骰開門</button>" + spaces);
-  response.write("<button onclick='onReadyClicked(this)'>準備好了!</button>" + spaces);
+  response.write("<button class='button' onclick='onDrawSeatClicked(this)'>抽座位</button>" + spaces);
+  response.write("<button class='button' onclick='onOpenDoorClicked(this)'>骰開門</button>" + spaces);
+  response.write("<button class='button' onclick='onReadyClicked(this)'>準備好了!</button>" + spaces);
 };
 
 BrowserServer.prototype.writeGameCommandButtons = function (response) {
   var spaces = "&nbsp;&nbsp;&nbsp;&nbsp;";
-  response.write("<button onclick='onShowClicked(this)'>亮牌</button>" + spaces);
-  response.write("<button onclick='onCoverClicked(this)'>暗牌</button>" + spaces);
-  response.write("<button onclick='onDiscardClicked(this)'>打牌</button>" + spaces);
-  response.write("<button onclick='onTakeFrontClicked(this)'>摸牌</button>" + spaces);
-  response.write("<button onclick='onTakeBackClicked(this)'>補花</button>" + spaces);
-  response.write("<button onclick='onEatClicked(this)'>吃/碰/槓</button>" + spaces);
+  response.write("<button class='button' onclick='onShowClicked(this)'>亮牌</button>" + spaces);
+  response.write("<button class='button' onclick='onCoverClicked(this)'>暗牌</button>" + spaces);
+  response.write("<button class='button' onclick='onDiscardClicked(this)'>打牌</button>" + spaces);
+  response.write("<button class='button' onclick='onTakeFrontClicked(this)'>摸牌</button>" + spaces);
+  response.write("<button class='button' onclick='onTakeBackClicked(this)'>補花</button>" + spaces);
+  response.write("<button class='button' onclick='onEatClicked(this)'>吃/碰/槓</button>" + spaces);
 };
 
 module.exports = BrowserServer;

@@ -60,7 +60,11 @@ Majong.prototype.onBrowserEvent = function (data) {
   var eventData = data.event.eventData;
   var response = data.writeResponse;
   logger.debug(`eventType=${eventType}`);
-  this.d_browserServer[eventType](eventData, response);
+  try {
+    this.d_browserServer[eventType](eventData, response);
+  } catch (e) {
+    logger.error(e);
+  }
 };
 
 Majong.prototype.onBoardEvent = function (data) {
@@ -68,7 +72,11 @@ Majong.prototype.onBoardEvent = function (data) {
   var eventData = data.event.eventData;
   var response = data.writeResponse;
   logger.debug(`eventType=${eventType}`);
-  this.d_boardHandler[eventType](eventData, response);
+  try {
+    this.d_boardHandler[eventType](eventData, response);
+  } catch (e) {
+    logger.error(e);
+  }
 };
 
 

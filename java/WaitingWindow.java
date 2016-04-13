@@ -16,7 +16,7 @@ public class WaitingWindow extends JDialog {
     setLocationRelativeTo(parent);
     setLayout( new GridLayout(1,1) );
 
-    int this_w = 850;
+    int this_w = 650;
     int this_h = 200;
     setSize(this_w, this_h);
     setDefaultCloseOperation( JDialog.DO_NOTHING_ON_CLOSE );
@@ -33,7 +33,7 @@ public class WaitingWindow extends JDialog {
 
     JTextField text = new JTextField("湊咖中, 請勿關閉視窗...");
     text.setOpaque(false);
-    text.setFont(new Font("SansSerif", Font.BOLD, 70));
+    text.setFont(new Font("SansSerif", Font.BOLD, 55));
     text.setEditable(false);
     text.setBorder(BorderFactory.createEmptyBorder());
     add(text);
