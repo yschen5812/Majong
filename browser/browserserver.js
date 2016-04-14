@@ -16,13 +16,15 @@ util.inherits(BrowserServer, Emitter);
 
 
 BrowserServer.prototype.generateStartPage =
-                          function (response, loginSessionId, boardId) {
+                          function (response, loginSessionId, boardId, boardReady) {
   // write html head, body labels
   this.writeHtmlStart(response);
   // write display area (id='displayArea')
   this.writeDisplayArea(response);
   // generate command buttons
-  this.writeStartCommandButtons(response);
+  this.writeStartCommandButtons(response, boardReady ?
+                                          {drawseat:"", opendoor:"", ready:""} :
+                                          {drawseat:"disabled", opendoor:"disabled", ready:"disabled"});
   // <script>
   this.writeScriptStart(response);
   // global varibles
@@ -86,11 +88,13 @@ BrowserServer.prototype.startgame = function (data, response) {
   var boardId = data["bid"];
   var loginSessionId = data["lsid"];
 
-  // this.emit('startgame', loginSessionId, boardId);
+  var boardReadyCallback = function (isReady) {
+    this.generateStartPage(response, loginSessionId, boardId, isReady);
+  }.bind(this);
+
+  this.emit('startgame', boardId, boardReadyCallback);
 
   logger.debug(`boardId=${boardId}, loginSessionId=${loginSessionId}`);
-
-  this.generateStartPage(response, loginSessionId, boardId);
 };
 
 BrowserServer.prototype.drawseat = function (data, response) {
@@ -102,7 +106,7 @@ BrowserServer.prototype.drawseat = function (data, response) {
 
   logger.debug(`boardId=${boardId}, loginSessionId=${loginSessionId}`);
 
-  this.generateStartPage(response, loginSessionId, boardId);
+  this.generateStartPage(response, loginSessionId, boardId, true);
 };
 
 BrowserServer.prototype.opendoor = function (data, response) {
@@ -114,7 +118,7 @@ BrowserServer.prototype.opendoor = function (data, response) {
 
   logger.debug(`boardId=${boardId}, loginSessionId=${loginSessionId}`);
 
-  this.generateStartPage(response, loginSessionId, boardId);
+  this.generateStartPage(response, loginSessionId, boardId, true);
 };
 
 BrowserServer.prototype.ready = function (data, response) {
@@ -548,11 +552,11 @@ BrowserServer.prototype.generateTileButtonHtml = function (buttonContent) {
   return `<button class='button' onclick='onTileClicked(this)'> ${buttonContent} </button>`;
 };
 
-BrowserServer.prototype.writeStartCommandButtons = function (response) {
+BrowserServer.prototype.writeStartCommandButtons = function (response,  options) {
   var spaces = "&nbsp;&nbsp;&nbsp;&nbsp;";
-  response.write("<button class='button' onclick='onDrawSeatClicked(this)'>抽座位</button>" + spaces);
-  response.write("<button class='button' onclick='onOpenDoorClicked(this)'>骰開門</button>" + spaces);
-  response.write("<button class='button' onclick='onReadyClicked(this)'>準備好了!</button>" + spaces);
+  response.write(`<button class='button' onclick='onDrawSeatClicked(this)' ${options.drawseat}>抽座位</button>` + spaces);
+  response.write(`<button class='button' onclick='onOpenDoorClicked(this)' ${options.opendoor}>骰開門</button>` + spaces);
+  response.write(`<button class='button' onclick='onReadyClicked(this)' ${options.ready}>準備好了!</button>` + spaces);
 };
 
 BrowserServer.prototype.writeGameCommandButtons = function (response) {

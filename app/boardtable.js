@@ -17,7 +17,8 @@ function BoardTable (logLevel) {
    *  {
    *    boardId: {
    *      subscribers: [ { boardSessionId: [updates since last query] }, ],
-   *      board: Board Object
+   *      board: Board Object,
+   *      status: { numRegistered: Number, readyBoards: { boardSessionId: Empty Object } }
    *    }
    *  }
    */
@@ -31,7 +32,9 @@ BoardTable.prototype.subscribeBoard = function (boardId, responseCB) {
   if (!(boardId in this.d_updateTable)) {
     this.d_updateTable[boardId] = {
       subscribers: [],
-      board      : new Board(this.d_logLevel)
+      board      : new Board(this.d_logLevel),
+      status     : { numRegistered: Number.MAX_SAFE_INTEGER,
+                     readyBoards: {} }
     };
   }
 
@@ -43,6 +46,23 @@ BoardTable.prototype.subscribeBoard = function (boardId, responseCB) {
   responseCB({
     boardSessionId : boardSessionId
   });
+};
+
+BoardTable.prototype.boardReady = function (boardId) {
+  logger.debug(`numRegistered=${this.d_updateTable[boardId].status.numRegistered}, readyBoards.length=${Object.keys(this.d_updateTable[boardId].status.readyBoards).length}`);
+  return this.d_updateTable[boardId].status.numRegistered ===
+         Object.keys(this.d_updateTable[boardId].status.readyBoards).length;
+};
+
+BoardTable.prototype.setBoardReady = function (boardId, boardSessionId) {
+  logger.debug(`setBoardReady boardId=${boardId}, boardSessionId=${boardSessionId}`);
+  this.d_updateTable[boardId].status.readyBoards[boardSessionId] = {};
+};
+
+BoardTable.prototype.lockNumRegisteredBoards = function (boardId) {
+  logger.debug(`lockNumRegisteredBoards boardId=${boardId}, set numRegistered=${this.d_updateTable[boardId].subscribers.length}`);
+  this.d_updateTable[boardId].status.numRegistered =
+  this.d_updateTable[boardId].subscribers.length;
 };
 
 BoardTable.prototype.addBoardUser = function (boardId, loginSessionId, responseCB) {

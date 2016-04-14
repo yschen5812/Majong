@@ -54,6 +54,8 @@ BoardEventHandler.prototype.startgame = function (data, response) {
     };
     response.write(JSON.stringify(respObj));
     response.end();
+
+    this.d_boardTable.lockNumRegisteredBoards(boardId);
   }
 };
 
@@ -67,6 +69,9 @@ BoardEventHandler.prototype.requestupdate = function (data, response) {
   };
   response.write(JSON.stringify(respObj));
   response.end();
+
+  // board client is ready after all (4) players registered
+  this.d_boardTable.setBoardReady(boardId, boardSessionId);
 };
 
 BoardEventHandler.prototype.reguser = function (data, response) {
@@ -100,6 +105,13 @@ BoardEventHandler.prototype.notifySubscribers =
   }.bind(this);
 
   this.d_boardTable.forEachSubscriberToUpdate(applyIf, doFunc);
+};
+
+BoardEventHandler.prototype.process_userStartGame = function (boardId, callback) {
+  logger.debug(`process_userStartGame`);
+  var boardReady = this.d_boardTable.boardReady(boardId);
+  logger.debug(`boardReady=${boardReady}`);
+  callback(boardReady);
 };
 
 BoardEventHandler.prototype.process_userDrawSeat =
