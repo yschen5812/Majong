@@ -290,8 +290,8 @@ BrowserServer.prototype.writeHtmlStart = function (response) {
   response.write(
     "<style>\
          .button {\
-             width:10%;\
-             height:5%;\
+             width:13%;\
+             height:10%;\
              font-size:120%;\
          }\
     </style>\
