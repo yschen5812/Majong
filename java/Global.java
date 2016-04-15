@@ -16,7 +16,7 @@ public class Global {
   public static final String NORTH = "北";
   public static final String SOUTH = "南";
 
-  public static final String ServerIP = "127.0.0.1";
+  public static final String ServerIP = "127.0.0.1"; //"52.38.147.223";
   public static final String ServerPort = "8080";
 
   public static final String DRAWSEAT  = "drawseat";

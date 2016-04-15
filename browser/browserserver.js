@@ -51,7 +51,7 @@ BrowserServer.prototype.generateNextPage =
   // write html head, body labels
   this.writeHtmlStart(response);
   // write buttons
-  atHand.forEach(function (urlUnit) {
+  this.sortTiles(atHand).forEach(function (urlUnit) {
     var content = TypeConverter.urlToReadable(urlUnit);
     var num = parseInt(data[urlUnit]);
     logger.debug(`urlUnit=${urlUnit}, content=${content}, num=${num}`);
@@ -567,6 +567,43 @@ BrowserServer.prototype.writeGameCommandButtons = function (response) {
   response.write("<button class='button' onclick='onTakeFrontClicked(this)'>摸牌</button>" + spaces);
   response.write("<button class='button' onclick='onTakeBackClicked(this)'>補花</button>" + spaces);
   response.write("<button class='button' onclick='onEatClicked(this)'>吃/碰/槓</button>" + spaces);
+};
+
+// Helper function
+BrowserServer.prototype.sortTiles = function (atHand) {
+  // this table controls the comparable values of each type
+  var typeOrderTable = {
+    "ti" : 0, //"條",
+    "wn" : 1, //"萬",
+    "tn" : 2, //"筒",
+    "jn" : 3, //"紅中",
+    "fa" : 4, //"青發",
+    "bb" : 5, //"白板",
+    "bf" : 6, //"北風",
+    "nf" : 7, //"南風",
+    "df" : 8, //"東風",
+    "xf" : 9, //"西風",
+    "ts" : 10, //"春",
+    "sa" : 11, //"夏",
+    "ch" : 12, //"秋",
+    "dn" : 13, //"冬",
+    "me" : 14, //"梅",
+    "ln" : 15, //"蘭",
+    "jw" : 16, //"竹",
+    "ju" : 17, //"菊",
+  };
+  atHand.sort( function (a, b) {
+    var type_a = a.substring(0, 2);
+    var type_b = b.substring(0, 2);
+    var subtype_a = a.substring(2);
+    var subtype_b = b.substring(2);
+
+    return typeOrderTable[type_a] !== typeOrderTable[type_b] ?
+           typeOrderTable[type_a] - typeOrderTable[type_b] :
+           (subtype_a - subtype_b);
+  });
+
+  return atHand;
 };
 
 module.exports = BrowserServer;
