@@ -14,7 +14,7 @@ function Board (logLevel) {
   Emitter.call(this);
   logger = new Logger(logLevel, this);
 
-  this.d_users = []; // loginSessionId list
+  this.d_users = {}; // loginSessionId : { loginSessionId: String, name: String }
   this.d_tiles = this.shuffle(this.getTiles());
 
   this.d_seaFloor = []; // the tiles in the order of users discard
@@ -27,34 +27,22 @@ util.inherits(Board, Emitter);
 
 
 Board.prototype.addUserToBoard = function (user) {
-  if (this.d_users.length >= global.maxBoardPlayers) {
+  if (Object.keys(this.d_users).length >= global.maxBoardPlayers) {
     logger.error(`${this.d_boardId} reached the user number limit.`);
     return false;
   }
 
-  if (this.d_users.indexOf(user) !== -1) {
+  if (user.loginSessionId in this.d_users) {
     logger.error(`${user} is already in the board.`);
     return false;
   }
-
-  this.d_users.push(user);
+  logger.debug(`addUserToBoard user=${JSON.stringify(user, null, 2)}`);
+  this.d_users[user.loginSessionId] = user;
   return true;
 };
 
 Board.prototype.removerUserFromBoard = function (user) {
-  // if (this.d_numUsers <= 0) {
-  //   logger.error(`no user in this board ${this.d_boardId}`);
-  //   return false;
-  // }
-  //
-  // if (this.d_users.indexOf(user) === -1) {
-  //   logger.error(`${user} not in this board ${this.d_boardId}`);
-  //   return false;
-  // }
-  //
-  // var idx = this.d_users.indexOf(user);
-  // this.d_users.splice(idx, 1);
-  // return true;
+
 };
 
 Board.prototype.assignSeatToUser = function (loginSessionId, seat) {
@@ -66,11 +54,11 @@ Board.prototype.users = function () {
 };
 
 Board.prototype.numOfUser = function () {
-  return this.d_users.length;
+  return Object.keys(this.d_users).length;
 };
 
 Board.prototype.hasUser = function (loginSessionId) {
-  return this.d_users.indexOf(loginSessionId) !== -1;
+  return (loginSessionId in this.d_users);
 };
 
 Board.prototype.threeDicesSum = function () {

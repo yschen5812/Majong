@@ -42,19 +42,15 @@ BoardEventHandler.prototype.startgame = function (data, response) {
     });
     response.end();
   } else {
-    var users = this.d_boardTable.getUsers(boardId).map( function(user) {
-      var obj = {
-        name: "username",
-        url: "url for browser client to connect"
-      };
-      return obj;
-    });
+    var users = this.d_boardTable.getUsers(boardId);
+    logger.debug(`number of users reaches ${global.maxBoardPlayers}!! users=${JSON.stringify(users, null, 2)}`);
     var respObj = {
       success: users
     };
     response.write(JSON.stringify(respObj));
     response.end();
 
+    // lock the current number of registered boards
     this.d_boardTable.lockNumRegisteredBoards(boardId);
   }
 };
@@ -80,8 +76,8 @@ BoardEventHandler.prototype.reguser = function (data, response) {
 
 BoardEventHandler.prototype.userjoin = function (data, response) {
   var boardId = data.boardId;
-  var loginSessionId = data.loginSessionId;
-  this.d_boardTable.addBoardUser(boardId, loginSessionId, function (res) {
+  var user = data.user;
+  this.d_boardTable.addBoardUser(boardId, user, function (res) {
     response.write(JSON.stringify(res));
     response.end();
   });

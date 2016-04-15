@@ -13,8 +13,8 @@ public class Global {
 
   public static final String EAST = "東";
   public static final String WEST = "西";
-  public static final String NORTH = "南";
-  public static final String SOUTH = "北";
+  public static final String NORTH = "北";
+  public static final String SOUTH = "南";
 
   public static final String ServerIP = "127.0.0.1";
   public static final String ServerPort = "8080";

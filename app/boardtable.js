@@ -65,7 +65,7 @@ BoardTable.prototype.lockNumRegisteredBoards = function (boardId) {
   this.d_updateTable[boardId].subscribers.length;
 };
 
-BoardTable.prototype.addBoardUser = function (boardId, loginSessionId, responseCB) {
+BoardTable.prototype.addBoardUser = function (boardId, user, responseCB) {
   if (!(boardId in this.d_updateTable)) {
     responseCB({
       failed: {},
@@ -75,7 +75,7 @@ BoardTable.prototype.addBoardUser = function (boardId, loginSessionId, responseC
   }
 
   var board = this.d_updateTable[boardId].board;
-  if (board.addUserToBoard(loginSessionId)) {
+  if (board.addUserToBoard(user)) {
     if (board.numOfUser() === global.maxBoardPlayers) {
       logger.debug(`fire ${boardId} event in boardTable`);
       this.emit(boardId);

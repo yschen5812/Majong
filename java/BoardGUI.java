@@ -146,11 +146,13 @@ public class BoardGUI extends JFrame {
  private boolean registerUser(String boardName, String userName) {
    String uuid = UUID.randomUUID().toString().substring(0, 5);
 
-   HashMap<String, String> request = new HashMap<String, String>();
+   JSONObject request = new JSONObject();
+   JSONObject user = new JSONObject();
+   user.put("loginSessionId", uuid);
+   user.put("name", userName);
    request.put("boardId", boardName);
-   request.put("loginSessionId", uuid);
-   JSONObject requestObj = new JSONObject(request);
-   JSONObject json = Gateway.send("userjoin", requestObj);
+   request.put("user", user);
+   JSONObject json = Gateway.send("userjoin", request);
    System.out.println(json.toString());
    Object rc = json.get("success");
    if (rc == null) return false;
@@ -167,7 +169,32 @@ public class BoardGUI extends JFrame {
    JSONObject json = Gateway.send("startgame", requestObj);
    System.out.println(json.toString());
    Object rc = json.get("success");
-   return (rc == null) ? false : true;
+   if (rc == null) {
+     return false;
+   }
+
+   JSONObject users = (JSONObject)rc;
+   if (users.size() != 4) {
+     System.out.println("ERROR: number of users when startgame should be 4.");
+     return false;
+   }
+
+   // users = {"28c96":{"name":"2","loginSessionId":"28c96"},"17e17":{"name":"1","loginSessionId":"17e17"},"9f954":{"name":"3","loginSessionId":"9f954"},"c9091":{"name":"4","loginSessionId":"c9091"}}
+   Iterator<String> lsids = users.keySet().iterator();
+	 while (lsids.hasNext()) {
+     String loginSessionId = (String)lsids.next();
+	   JSONObject user = (JSONObject)users.get(loginSessionId);
+     String name = (String)user.get("name");
+
+     // save to map
+     String nameExist = d_userNameTable.putIfAbsent(loginSessionId, name);
+     if (nameExist != null && !nameExist.equals(name)) {
+       System.out.println("ERROR: name records not match existing=" + nameExist + ", name=" + name);
+       return false;
+     }
+	 }
+
+   return true;
  }
 
  private void setUpdateInterval(String boardName) {

@@ -170,7 +170,7 @@ public class SeaFloor extends JPanel {
 
   public void setEastUserName(String name) {
     System.out.println("setEastUserName name=" + name);
-    JButton btn = d_allGrids.get(10*Global.SEAFLOORGRIDS_H + (Global.SEAFLOORGRIDS_H-1));
+    JButton btn = d_allGrids.get((int)(Global.SEAFLOORGRIDS_V/2)*Global.SEAFLOORGRIDS_H + (Global.SEAFLOORGRIDS_H-1));
     btn.setText(name);
     // btn.setOpaque(true);
     // btn.setContentAreaFilled(true);
@@ -181,7 +181,7 @@ public class SeaFloor extends JPanel {
 
   public void setWestUserName(String name) {
     System.out.println("setWestUserName name=" + name);
-    JButton btn = d_allGrids.get(10*Global.SEAFLOORGRIDS_H + 0);
+    JButton btn = d_allGrids.get((int)(Global.SEAFLOORGRIDS_V/2)*Global.SEAFLOORGRIDS_H + 0);
     btn.setText(name);
     // btn.setOpaque(true);
     // btn.setContentAreaFilled(true);
@@ -192,7 +192,7 @@ public class SeaFloor extends JPanel {
 
   public void setNorthUserName(String name) {
     System.out.println("setNorthUserName name=" + name);
-    JButton btn = d_allGrids.get(0*Global.SEAFLOORGRIDS_H + (int)(Global.SEAFLOORGRIDS_V/2));
+    JButton btn = d_allGrids.get(0*Global.SEAFLOORGRIDS_H + (int)(Global.SEAFLOORGRIDS_H/2));
     btn.setText(name);
     // btn.setOpaque(false);
     // btn.setContentAreaFilled(false);
@@ -203,7 +203,7 @@ public class SeaFloor extends JPanel {
 
   public void setSouthUserName(String name) {
     System.out.println("setSouthUserName name=" + name);
-    JButton btn = d_allGrids.get(19*Global.SEAFLOORGRIDS_H + (int)(Global.SEAFLOORGRIDS_V/2));
+    JButton btn = d_allGrids.get((Global.SEAFLOORGRIDS_V-1)*Global.SEAFLOORGRIDS_H + (int)(Global.SEAFLOORGRIDS_H/2));
     btn.setText(name);
     // btn.setOpaque(true);
     // btn.setContentAreaFilled(true);
