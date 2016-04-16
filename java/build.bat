@@ -11,4 +11,4 @@ javac -encoding utf-8 -cp .;./json-simple-1.1.1.jar WaitingWindow.java
 javac -encoding utf-8 -cp .;./json-simple-1.1.1.jar BoardGUI.java
 
 
-jar cfe ShengMahjong.jar BoardGUI *.class
+jar cfm ShengMahjong.jar manifest.mf ./*.class

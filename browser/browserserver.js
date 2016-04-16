@@ -45,7 +45,10 @@ BrowserServer.prototype.generateStartPage =
 
 BrowserServer.prototype.generateNextPage =
                           function (data, response, loginSessionId, boardId) {
-  var atHand = Object.keys(data);
+  var highlight = data["highlight"];
+  var atHand = Object.keys(data).filter( function(key) {
+    return key === "highlight" ? false : true;
+  });
   var atHandString = "";
 
   // write html head, body labels
@@ -56,7 +59,8 @@ BrowserServer.prototype.generateNextPage =
     var num = parseInt(data[urlUnit]);
     logger.debug(`urlUnit=${urlUnit}, content=${content}, num=${num}`);
     for (var count = 0; count < num; ++count) {
-      response.write(this.generateTileButtonHtml(content) + "&nbsp;");
+      response.write(this.generateTileButtonHtml(content,
+        (highlight === urlUnit && count == num-1) ? "id='highlight' style='background-color:lightgreen'" : "") + "&nbsp;");
     }
 
     atHandString += `${urlUnit}:${num},`;
@@ -67,6 +71,8 @@ BrowserServer.prototype.generateNextPage =
   this.writeGameCommandButtons(response);
   // <script>
   this.writeScriptStart(response);
+  // set up timer for highlight and onload event
+  this.writeTimerWindowOnLoadEvent(response);
   // global varibles
   this.writeGlobalVariables(response);
   // write onClick handlers for all buttons
@@ -221,7 +227,8 @@ BrowserServer.prototype.takefront = function (data, response) {
 
     logger.debug(`placedUrl=${placedUrl}, boardId=${boardId}, ` +
                  `loginSessionId=${loginSessionId}, data[${placedUrl}]=${data[placedUrl]}`);
-
+    // highlight 'frontTile'
+    data["highlight"] = frontTile;
     this.generateNextPage(data, response, loginSessionId, boardId);
   }.bind(this));
 };
@@ -242,7 +249,8 @@ BrowserServer.prototype.takeback = function (data, response) {
 
     logger.debug(`placedUrl=${placedUrl}, boardId=${boardId}, ` +
                  `loginSessionId=${loginSessionId}, data[${placedUrl}]=${data[placedUrl]}`);
-
+    // highlight 'backTile'
+    data["highlight"] = backTile;
     this.generateNextPage(data, response, loginSessionId, boardId);
   }.bind(this));
 };
@@ -315,6 +323,18 @@ BrowserServer.prototype.writeDisplayArea = function (response) {
 
 BrowserServer.prototype.writeScriptStart = function (response) {
   response.write("<script>");
+};
+
+BrowserServer.prototype.writeTimerWindowOnLoadEvent = function (response) {
+  response.write(
+    "window.addEventListener('load', function() {                       \
+       setTimeout( function() {                                         \
+         var btn = document.getElementById('highlight');                \
+         if (btn) {                                                     \
+           btn.style.backgroundColor = '';                              \
+         }                                                              \
+       }, 1200);                                                        \
+     });");
 };
 
 BrowserServer.prototype.writeScriptEnd = function (response) {
@@ -548,8 +568,8 @@ BrowserServer.prototype.writeReadableToUrl = function (response) {
   }");
 };
 
-BrowserServer.prototype.generateTileButtonHtml = function (buttonContent) {
-  return `<button class='button' onclick='onTileClicked(this)'> ${buttonContent} </button>`;
+BrowserServer.prototype.generateTileButtonHtml = function (buttonContent, highlightContext) {
+  return `<button class='button' onclick='onTileClicked(this)' ${highlightContext}> ${buttonContent} </button>`;
 };
 
 BrowserServer.prototype.writeStartCommandButtons = function (response,  options) {
