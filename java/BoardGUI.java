@@ -264,6 +264,8 @@ public class BoardGUI extends JFrame {
      case Global.EAT:
        handleEat(data, playerLsid);
        break;
+     case Global.NEXTROUND:
+       handleNextRound(data);
      default:
        System.out.println("ERROR: unknown event=" + event);
    }
@@ -395,6 +397,46 @@ public class BoardGUI extends JFrame {
    }
  }
 
+ private void handleNextRound(Object data) {
+   System.out.println("handleNextRound");
+   getContentPane().removeAll();
+
+   d_northTiles = new UserTiles(Global.HORIZONTAL);
+   d_southTiles = new UserTiles(Global.HORIZONTAL);
+   d_westTiles  = new UserTiles(Global.VERTICAL);
+   d_eastTiles  = new UserTiles(Global.VERTICAL);
+   d_seaFloor  = new SeaFloor();
+   add(d_northTiles, BorderLayout.NORTH);
+   add(d_southTiles, BorderLayout.SOUTH);
+   add(d_westTiles,  BorderLayout.WEST);
+   add(d_eastTiles,  BorderLayout.EAST);
+   add(d_seaFloor,   BorderLayout.CENTER);
+
+   for ( String playerLsid : d_userNameTable.keySet() ) {
+     try {
+       String name = d_userNameTable.get(playerLsid);
+       String seat = d_userSeatTable.get(playerLsid);
+       switch(seat) {
+         case "東":
+           d_seaFloor.setEastUserName(name);
+           break;
+         case "西":
+           d_seaFloor.setWestUserName(name);
+           break;
+         case "南":
+           d_seaFloor.setSouthUserName(name);
+           break;
+         case "北":
+           d_seaFloor.setNorthUserName(name);
+           break;
+         default:
+           System.out.println("ERROR: unknown user loginSessionId=" + playerLsid);
+       }
+     } catch (Exception e) {
+       System.out.println("ERROR: failed to reinsert user name for '" + playerLsid + "'");
+     }
+   }
+ }
  // private void addListeners() {
  //   this.addWindowListener(new WindowAdaptor());
  // }

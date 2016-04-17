@@ -91,7 +91,7 @@ BoardEventHandler.prototype.nextround = function (data, response) {
 
   var doFunc = function (subscriber) {
     this.d_boardTable.updateSubscriber(subscriber, {
-      player: "general event",
+      player: "GENERAL",
       action: {nextround: {}}
     });
     logger.debug(`executed updateSubscriber subscriber=${JSON.stringify(subscriber)}`);
@@ -103,6 +103,8 @@ BoardEventHandler.prototype.nextround = function (data, response) {
   setTimeout(
     function() {
       this.d_boardTable.nextround(boardId);
+      response.write({success: {}});
+      response.end();
     }.bind(this),
     2000);
 };

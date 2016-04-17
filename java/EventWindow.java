@@ -38,7 +38,9 @@ public class EventWindow extends JFrame {
  public void addEvent(String playerName, String event) {
    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
    Date date = Calendar.getInstance().getTime();
-   d_textArea.append("\n" + dateFormat.format(date) + "      '" + playerName + "' " + event);
+   String eventMsg = dateFormat.format(date) + "      ";
+   eventMsg += (playerName == null) ? ("***GENERAL " + event) : ("'" + playerName + "' " + event);
+   d_textArea.append("\n" + eventMsg);
    d_textArea.validate();
  }
 

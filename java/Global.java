@@ -30,4 +30,5 @@ public class Global {
   public static final String SHOW      = "show";
   public static final String COVER     = "cover";
   public static final String EAT       = "eat";
+  public static final String NEXTROUND = "nextround";
 }

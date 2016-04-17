@@ -49,6 +49,7 @@ Board.prototype.nextround = function () {
 
   this.d_seaFloor = []; // the tiles in the order of users discard
   this.d_latestSeaFloorTile = null;
+  return true;
 };
 
 Board.prototype.assignSeatToUser = function (loginSessionId, seat) {
