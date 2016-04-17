@@ -103,7 +103,7 @@ BoardEventHandler.prototype.nextround = function (data, response) {
   setTimeout(
     function() {
       this.d_boardTable.nextround(boardId);
-      response.write({success: {}});
+      response.write(JSON.stringify({success: {}}));
       response.end();
     }.bind(this),
     2000);
