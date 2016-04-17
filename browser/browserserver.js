@@ -584,6 +584,7 @@ BrowserServer.prototype.writeGameCommandButtons = function (response) {
   response.write("<button class='button' onclick='onShowClicked(this)'>亮牌</button>" + spaces);
   response.write("<button class='button' onclick='onCoverClicked(this)'>暗牌</button>" + spaces);
   response.write("<button class='button' onclick='onDiscardClicked(this)'>打牌</button>" + spaces);
+  response.write(spaces + spaces);
   response.write("<button class='button' onclick='onTakeFrontClicked(this)'>摸牌</button>" + spaces);
   response.write("<button class='button' onclick='onTakeBackClicked(this)'>補花</button>" + spaces);
   response.write("<button class='button' onclick='onEatClicked(this)'>吃/碰/槓</button>" + spaces);
