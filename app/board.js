@@ -42,7 +42,13 @@ Board.prototype.addUserToBoard = function (user) {
 };
 
 Board.prototype.removerUserFromBoard = function (user) {
+};
 
+Board.prototype.nextround = function () {
+  this.d_tiles = this.shuffle(this.getTiles());
+
+  this.d_seaFloor = []; // the tiles in the order of users discard
+  this.d_latestSeaFloorTile = null;
 };
 
 Board.prototype.assignSeatToUser = function (loginSessionId, seat) {
@@ -108,7 +114,7 @@ Board.prototype.eat = function () {
 
 
 Board.prototype.getTiles = function () {
-  var flowers = ['ts', 'sa', 'ch', 'tn', 'me', 'ln', 'jw', 'ju'];
+  var flowers = ['ts', 'sa', 'ch', 'dn', 'me', 'ln', 'jw', 'ju'];
 
   var word = ['bf', 'nf', 'df', 'xf', 'jn', 'fa', 'bb'];
   word = word.concat(word, word, word);

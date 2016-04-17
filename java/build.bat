@@ -9,6 +9,6 @@ javac -encoding utf-8 -cp .;./json-simple-1.1.1.jar SeaFloor.java
 javac -encoding utf-8 -cp .;./json-simple-1.1.1.jar WaitingWindow.java
 
 javac -encoding utf-8 -cp .;./json-simple-1.1.1.jar BoardGUI.java
-
+javac -encoding utf-8 -cp .;./json-simple-1.1.1.jar EventWindow.java
 
 jar cfm ShengMahjong.jar manifest.mf ./*.class

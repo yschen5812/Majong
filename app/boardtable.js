@@ -115,6 +115,10 @@ BoardTable.prototype.retrieveUpdates = function (boardId, boardSessionId) {
   return records;
 };
 
+BoardTable.prototype.nextround = function (boardId) {
+  return this.d_updateTable[boardId].board.nextround();
+};
+
 BoardTable.prototype.getUsers = function (boardId) {
   return this.d_updateTable[boardId].board.users();
 };

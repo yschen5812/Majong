@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Class-Path: json-simple-1.1.1.jar
+Main-Class: NextRound
+Created-By: 04.15.2016 (Yu-Sheng Chen)

@@ -21,7 +21,7 @@ public class SeaFloor extends JPanel {
   // Show the green covered tiles
   public void showAllUntakenTiles() {
     // NORTH
-    for (int col = 1; col < Global.SEAFLOORGRIDS_H - 1; ++col) {
+    for (int col = 1; col < Global.SEAFLOORGRIDS_H - 2; ++col) {
       int firstRow = 1;
       JButton btn1;
       btn1 = d_allGrids.get(firstRow*Global.SEAFLOORGRIDS_H + col);
@@ -35,7 +35,7 @@ public class SeaFloor extends JPanel {
       d_unTakenGrids.addLast(btn1);
     }
     // EAST
-    for (int row = 1; row < Global.SEAFLOORGRIDS_V - 1; ++row) {
+    for (int row = 1; row < Global.SEAFLOORGRIDS_V - 2; ++row) {
       int lastCol = Global.SEAFLOORGRIDS_H - 2;
       JButton btn2;
       btn2 = d_allGrids.get(row*Global.SEAFLOORGRIDS_H + lastCol);
@@ -49,7 +49,7 @@ public class SeaFloor extends JPanel {
       d_unTakenGrids.addLast(btn2);
     }
     // SOUTH
-    for (int col = Global.SEAFLOORGRIDS_H - 2; col >= 1; --col) {
+    for (int col = Global.SEAFLOORGRIDS_H - 2; col >= 2; --col) {
       int lastRow = Global.SEAFLOORGRIDS_V - 2;
       JButton btn2;
       btn2 = d_allGrids.get(lastRow*Global.SEAFLOORGRIDS_H + col);
@@ -63,7 +63,7 @@ public class SeaFloor extends JPanel {
       d_unTakenGrids.addLast(btn2);
     }
     // WEST
-    for (int row = Global.SEAFLOORGRIDS_V - 2; row >= 1; -- row) {
+    for (int row = Global.SEAFLOORGRIDS_V - 2; row >= 2; -- row) {
       int firstCol = 1;
       JButton btn1;
       btn1 = d_allGrids.get(row*Global.SEAFLOORGRIDS_H + firstCol);
@@ -108,6 +108,8 @@ public class SeaFloor extends JPanel {
   }
 
   public void onTakeFront() {
+    // ++d_takenCount;
+
     JButton btn = d_unTakenGrids.getFirst();
     if (btn.getBackground().equals(Color.GREEN.darker())) {
       btn.setBackground(Color.GREEN);
@@ -117,9 +119,19 @@ public class SeaFloor extends JPanel {
       btn.setContentAreaFilled(false);
       btn.setBorderPainted(false);
     }
+    // if (d_takenCount % 2 == 1) {
+    //   btn.setBackground(Color.GREEN);
+    // } else {
+    //   d_unTakenGrids.removeFirst();
+    //   btn.setOpaque(false);
+    //   btn.setContentAreaFilled(false);
+    //   btn.setBorderPainted(false);
+    // }
   }
 
   public void onTakeBack() {
+    // ++d_takenCount;
+
     JButton btn = d_unTakenGrids.getLast();
     if (btn.getBackground().equals(Color.GREEN.darker())) {
       btn.setBackground(Color.GREEN);
@@ -129,6 +141,14 @@ public class SeaFloor extends JPanel {
       btn.setContentAreaFilled(false);
       btn.setBorderPainted(false);
     }
+    // if (d_takenCount % 2 == 1) {
+    //   btn.setBackground(Color.GREEN);
+    // } else {
+    //   d_unTakenGrids.removeFirst();
+    //   btn.setOpaque(false);
+    //   btn.setContentAreaFilled(false);
+    //   btn.setBorderPainted(false);
+    // }
   }
 
   public void discardToSeaFloor(String tile) {
@@ -265,4 +285,5 @@ public class SeaFloor extends JPanel {
   private java.util.Deque<JButton> d_unTakenGrids;
   private java.util.List<JButton>  d_allGrids;
   private JButton d_prevDiscarded;
+  private int d_takenCount = 0;
 }

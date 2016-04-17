@@ -16,10 +16,10 @@ public class BoardGUI extends JFrame {
  // Constructor
  BoardGUI() {
    super( "Sheng Mahjong" );
+
    setSize( Global.WINDOWWIDTH, Global.WINDOWHEIGHT );
    setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
    setLocation();
-   setVisible(true);
 
    setLayout( new BorderLayout() );
 
@@ -38,6 +38,11 @@ public class BoardGUI extends JFrame {
    d_userSeatTable = new HashMap<String, String>();;
    d_userNameTable = new HashMap<String, String>();
 
+
+   // init event window
+   d_eventWindow = new EventWindow(this);
+
+   setVisible(true);
 
    // start UI
    initiateGame();
@@ -220,6 +225,9 @@ public class BoardGUI extends JFrame {
            String event = (String)(action.keySet().iterator().next());
            Object data = action.get(event);
            executeEvent(event, data, playerLsid);
+
+           // record into event window
+           d_eventWindow.addEvent(d_userNameTable.get(playerLsid), event);
          }
        } catch(Exception e){
          System.out.println(e.toString());
@@ -403,4 +411,6 @@ public class BoardGUI extends JFrame {
  private UserTiles d_eastTiles;
  private UserTiles d_southTiles;
  private SeaFloor  d_seaFloor;
+
+ private EventWindow d_eventWindow;
 }

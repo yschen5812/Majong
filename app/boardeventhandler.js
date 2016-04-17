@@ -83,6 +83,29 @@ BoardEventHandler.prototype.userjoin = function (data, response) {
   });
 };
 
+BoardEventHandler.prototype.nextround = function (data, response) {
+  var boardId = data.boardId;
+  var applyIf = function (bid) {
+    return bid === boardId;
+  };
+
+  var doFunc = function (subscriber) {
+    this.d_boardTable.updateSubscriber(subscriber, {
+      player: "general event",
+      action: {nextround: {}}
+    });
+    logger.debug(`executed updateSubscriber subscriber=${JSON.stringify(subscriber)}`);
+  }.bind(this);
+
+  // notify board subscribers
+  this.d_boardTable.forEachSubscriberToUpdate(applyIf, doFunc);
+  // update data on server after 2 seconds
+  setTimeout(
+    function() {
+      this.d_boardTable.nextround(boardId);
+    }.bind(this),
+    2000);
+};
 
 BoardEventHandler.prototype.notifySubscribers =
                                 function (loginSessionId, boardId, action) {
